@@ -1,10 +1,19 @@
 module.exports = {
   register: async (req, res) => {
     try {
+      const { name, email, password } = req.body;
+
+      if ([name, email, password].includes("")) {
+        let error = new Error("Todos los datos son obligatorios");
+        error.status = 400;
+        throw error;
+      }
+
       return res.status(201).json({
         ok: true,
         msg: "Usuario registrado",
       });
+      
     } catch (error) {
       console.log(error);
       return res.status(error.status || 500).json({
@@ -51,7 +60,8 @@ module.exports = {
       console.log(error);
       return res.status(error.status || 500).json({
         ok: false,
-        msg: error.message || "Ups, lo siento! Hubo un error al enviar el token",
+        msg:
+          error.message || "Ups, lo siento! Hubo un error al enviar el token",
       });
     }
   },
@@ -65,7 +75,9 @@ module.exports = {
       console.log(error);
       return res.status(error.status || 500).json({
         ok: false,
-        msg: error.message || "Ups, lo siento! Hubo un error al verificar el token",
+        msg:
+          error.message ||
+          "Ups, lo siento! Hubo un error al verificar el token",
       });
     }
   },
@@ -79,7 +91,9 @@ module.exports = {
       console.log(error);
       return res.status(error.status || 500).json({
         ok: false,
-        msg: error.message || "Ups, lo siento! Hubo un error al cambiar la contraseña",
+        msg:
+          error.message ||
+          "Ups, lo siento! Hubo un error al cambiar la contraseña",
       });
     }
   },
