@@ -1,13 +1,21 @@
+const createError = require('http-errors');
+const User = require('../database/models/User');
+const errorResponse = require('../helpers/errorResponse');
+
 module.exports = {
   register: async (req, res) => {
     try {
       const { name, email, password } = req.body;
 
       if ([name, email, password].includes("")) {
-        let error = new Error("Todos los datos son obligatorios");
-        error.status = 400;
-        throw error;
-      }
+        throw createError(400,"Todos los datos son obligatorios");
+      };
+
+      let user = await User.findOne({
+        email
+      });
+
+      console.log(user);
 
       return res.status(201).json({
         ok: true,
@@ -16,10 +24,7 @@ module.exports = {
       
     } catch (error) {
       console.log(error);
-      return res.status(error.status || 500).json({
-        ok: false,
-        msg: error.message || "Ups, lo siento! Hubo un error en el registro",
-      });
+      return errorResponse(res, error, "REGISTER")
     }
   },
   login: async (req, res) => {
